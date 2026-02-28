@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const ManageTeachers = () => {
     const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Using dummy data if API fails to populate or is empty for visual matching
     const dummyTeachers = [
@@ -18,7 +19,7 @@ const ManageTeachers = () => {
     useEffect(() => {
         const fetchTeachers = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/admin/teachers');
+                const res = await axios.get('http://127.0.0.1:5000/api/admin/teachers');
                 // Use res.data if available, otherwise dummy data for visual demonstration
                 if (res.data && res.data.length > 0) {
                     setTeachers(res.data);
@@ -59,6 +60,8 @@ const ManageTeachers = () => {
                         <input
                             type="text"
                             placeholder="Search By Teacher Name Or Subject....."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full bg-[#f3f4f6] border-none rounded-full py-4 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
                         />
                     </div>
@@ -78,13 +81,13 @@ const ManageTeachers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {teachers.map((teacher, index) => (
+                            {teachers.filter(t => t.name?.toLowerCase().includes(searchTerm.toLowerCase()) || t.subject?.toLowerCase().includes(searchTerm.toLowerCase())).map((teacher, index) => (
                                 <tr key={teacher._id || index} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors group">
                                     <td className="py-5">
                                         <div className="flex justify-center">
                                             <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100 shadow-sm border border-gray-200">
                                                 <img
-                                                    src={teacher.profilePicture || `https://ui-avatars.com/api/?name=${teacher.name}&background=eff6ff&color=3b82f6`}
+                                                    src={teacher.profilePicture?.startsWith('/uploads/') ? `http://127.0.0.1:5000${teacher.profilePicture}` : (teacher.profilePicture || `https://ui-avatars.com/api/?name=${teacher.name}&background=eff6ff&color=3b82f6`)}
                                                     alt={teacher.name}
                                                     className="w-full h-full object-cover"
                                                 />
@@ -98,12 +101,12 @@ const ManageTeachers = () => {
                                         Rs {teacher.salary ? teacher.salary.toLocaleString() : 'N/A'}
                                     </td>
                                     <td className="py-5">
-                                        <span className="bg-[#10b981] text-white px-5 py-1.5 rounded-full text-xs font-bold shadow-sm inline-block">
-                                            Active
+                                        <span className={`px-5 py-2.5 rounded-full text-[11px] font-[900] uppercase tracking-wider ${teacher.status === 'Inactive' ? 'bg-red-50 text-red-500' : 'bg-[#10b981]/10 text-[#10b981]'}`}>
+                                            {teacher.status || 'Active'}
                                         </span>
                                     </td>
                                     <td className="py-5">
-                                        <Link to={`/admin/teachers/${teacher._id || index}`} className="flex items-center justify-center gap-2 text-gray-900 font-bold text-sm hover:text-[#3b82f6] mx-auto transition-colors">
+                                        <Link to={`/admin/teachers/${teacher.id || teacher._id}`} className="flex items-center justify-center gap-2 text-gray-900 font-bold text-sm hover:text-[#3b82f6] mx-auto transition-colors">
                                             <Eye size={18} className="stroke-[2.5px]" /> View
                                         </Link>
                                     </td>

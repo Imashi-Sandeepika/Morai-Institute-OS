@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { ChevronDown } from 'lucide-react';
 
 const AddClass = () => {
     const [formData, setFormData] = useState({
@@ -11,6 +12,19 @@ const AddClass = () => {
         monthlyFee: '',
         schedule: ''
     });
+    const [teachers, setTeachers] = useState([]);
+
+    useEffect(() => {
+        const fetchTeachers = async () => {
+            try {
+                const res = await axios.get('http://127.0.0.1:5000/api/admin/teachers');
+                setTeachers(res.data);
+            } catch (err) {
+                console.error('Failed to fetch teachers:', err);
+            }
+        };
+        fetchTeachers();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +33,7 @@ const AddClass = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:5000/api/admin/add-class', {
+            await axios.post('http://127.0.0.1:5000/api/admin/add-class', {
                 className: formData.className,
                 subject: formData.subject,
                 teacher: formData.assignTeacher,
@@ -71,15 +85,21 @@ const AddClass = () => {
                     </div>
                     <div className="space-y-3">
                         <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Assign Teacher</label>
-                        <input
-                            type="text"
-                            name="assignTeacher"
-                            required
-                            className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400"
-                            placeholder="Enter Teacher Name"
-                            value={formData.assignTeacher}
-                            onChange={handleChange}
-                        />
+                        <div className="relative">
+                            <select
+                                name="assignTeacher"
+                                required
+                                value={formData.assignTeacher}
+                                onChange={handleChange}
+                                className="w-full appearance-none border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400 cursor-pointer"
+                            >
+                                <option value="" disabled>Select a Teacher</option>
+                                {teachers.map((t) => (
+                                    <option key={t.id || t._id} value={t.id || t._id}>{t.name} ({t.subject || 'No Subject'})</option>
+                                ))}
+                            </select>
+                            <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                        </div>
                     </div>
                     <div className="space-y-3">
                         <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Number Of Student</label>

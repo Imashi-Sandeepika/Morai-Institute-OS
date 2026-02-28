@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const ManageClasses = () => {
     const [classes, setClasses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const dummyClasses = [
         { _id: '1', name: 'Mathematics', subject: 'Mathematics', teacher: 'Nimal Perera', students: 120, fee: 2500, schedule: '' },
@@ -17,7 +18,7 @@ const ManageClasses = () => {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/admin/classes');
+                const res = await axios.get('http://127.0.0.1:5000/api/admin/classes');
                 if (res.data && res.data.length > 0) {
                     setClasses(res.data);
                 } else {
@@ -57,6 +58,8 @@ const ManageClasses = () => {
                         <input
                             type="text"
                             placeholder="Search By Class Name Or Subject....."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full bg-[#f3f4f6] border-none rounded-full py-4 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
                         />
                     </div>
@@ -76,7 +79,7 @@ const ManageClasses = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {classes.map((cls, index) => (
+                            {classes.filter(c => c.name?.toLowerCase().includes(searchTerm.toLowerCase()) || c.subject?.toLowerCase().includes(searchTerm.toLowerCase())).map((cls, index) => (
                                 <tr key={cls._id || index} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                                     <td className="py-5 font-bold text-gray-900 text-[14px] text-left pl-4">{cls.name || cls.subject}</td>
                                     <td className="py-5 font-semibold text-gray-600 text-[14px] text-left">{cls.subject}</td>

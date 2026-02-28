@@ -1,18 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, UserPlus, Eye, ChevronDown, Calendar } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const ClassDetails = () => {
     const navigate = useNavigate();
 
-    const classInfo = {
-        name: 'Grade 10 - Mathematics',
-        subject: 'Mathematics',
-        teacher: 'Nimal Perera',
-        students: 120,
-        fee: 2500,
-        schedule: 'Mon, Wed, Fri - 3:00 PM'
-    };
+    const { id } = useParams();
+    const [classInfo, setClassInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClassDetails = async () => {
+            try {
+                const res = await axios.get(`http://127.0.0.1:5000/api/admin/classes/${id}`);
+                setClassInfo(res.data);
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchClassDetails();
+    }, [id]);
+
+    if (loading) return <div className="h-full flex items-center justify-center"><div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>;
+
+    if (!classInfo) {
+        return (
+            <div className="flex flex-col items-center justify-center h-[60vh]">
+                <h2 className="text-2xl font-bold text-gray-700">Class Not Found</h2>
+                <button onClick={() => navigate(-1)} className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg">Go Back</button>
+            </div>
+        );
+    }
 
     const studentList = [
         { name: 'Kasun Bandara', phone: '0771111111', feeStatus: 'Paid', attendanceStatus: 'Present' },
@@ -58,11 +79,11 @@ const ClassDetails = () => {
                     </div>
                     <div className="flex justify-between border-b border-gray-50 pb-4">
                         <p className="text-[12px] font-[900] text-gray-500 uppercase">Monthly Fee</p>
-                        <p className="text-[14px] font-[700] text-gray-900">Rs {classInfo.fee.toLocaleString()}</p>
+                        <p className="text-[14px] font-[700] text-gray-900">Rs {classInfo.fee ? classInfo.fee.toLocaleString() : 'N/A'}</p>
                     </div>
                     <div className="flex justify-between border-b border-gray-50 pb-4">
                         <p className="text-[12px] font-[900] text-gray-500 uppercase">Schedule</p>
-                        <p className="text-[14px] font-[700] text-gray-900">{classInfo.schedule}</p>
+                        <p className="text-[14px] font-[700] text-gray-900">{classInfo.schedule || 'N/A'}</p>
                     </div>
                 </div>
             </div>
