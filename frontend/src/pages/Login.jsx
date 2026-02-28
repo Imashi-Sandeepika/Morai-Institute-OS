@@ -3,109 +3,92 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { School, ArrowRight, UserCircle, Lock } from 'lucide-react';
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const res = await axios.post('http://localhost:5000/api/auth/login', formData);
             login(res.data.user, res.data.token);
+            toast.success('Login Successful');
 
-            if (res.data.user.role === 'superadmin' || res.data.user.role === 'institute') {
+            if (res.data.user.role === 'institute' || res.data.user.role === 'superadmin') {
                 navigate('/admin/dashboard');
             } else {
                 navigate(`/${res.data.user.role}/dashboard`);
             }
-            toast.success('Login Successful');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Login Failed');
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl flex overflow-hidden flex-col md:flex-row">
-
-                {/* Left Side: Brand Context */}
-                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 text-white p-12 md:w-1/2 flex flex-col justify-center items-start relative overflow-hidden">
-                    <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-white opacity-10 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-[-50px] left-[-50px] w-48 h-48 bg-blue-300 opacity-20 rounded-full blur-3xl"></div>
-
-                    <div className="relative z-10">
-                        <School size={48} className="mb-6 opacity-90" />
-                        <h1 className="text-4xl font-extrabold mb-4 tracking-tight">Morai Institute OS</h1>
-                        <p className="text-indigo-100 text-lg mb-8 max-w-sm">
-                            The ultimate management system for modern educational institutions. Elevate your learning environment today.
-                        </p>
-                        <div className="space-y-3 font-medium text-sm text-indigo-100/80">
-                            <p className="flex items-center"><UserCircle size={18} className="mr-2" /> Secure Role-Based Access</p>
-                            <p className="flex items-center"><Lock size={18} className="mr-2" /> End-to-End Encrypted Passwords</p>
-                        </div>
+        <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center p-6">
+            <div className="bg-white rounded-[32px] shadow-[0_10px_50px_rgba(0,0,0,0.04)] w-full max-w-[480px] p-10 md:p-14 border border-gray-100/50">
+                <div className="flex flex-col items-center mb-10">
+                    <div className="w-14 h-14 mb-4">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-[#1e3a8a]">
+                            <path d="M12 3L4 9V21H20V9L12 3Z" fill="currentColor" opacity="0.1" />
+                            <path d="M12 3L4 9V21H20V9L12 3Z" stroke="#0052cc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 11V16M9 13.5H15" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                     </div>
+                    <h1 className="text-[26px] font-[900] text-gray-900 tracking-tight leading-tight">Morai Institute OS</h1>
+                    <p className="text-gray-500 font-bold text-[13px] mt-1.5 uppercase tracking-wider">Login to your admin account</p>
                 </div>
 
-                {/* Right Side: Login Form */}
-                <div className="p-12 md:w-1/2 bg-white flex flex-col justify-center">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                    <p className="text-gray-500 mb-8">Please sign in to your account to continue.</p>
+                <form className="space-y-6" onSubmit={handleLogin}>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase tracking-wide">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Email"
+                        />
+                    </div>
 
-                    <form onSubmit={handleLogin} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-gray-50"
-                                placeholder="admin@morai.edu"
-                                required
-                            />
-                        </div>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase tracking-wide">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Password"
+                        />
+                    </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-gray-50"
-                                placeholder="••••••••"
-                                required
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center text-gray-600">
-                                <input type="checkbox" className="mr-2 rounded text-indigo-600 focus:ring-indigo-500" />
-                                Remember me
-                            </label>
-                            <a href="#" className="text-indigo-600 hover:text-indigo-700 font-semibold transition">Forgot Password?</a>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2 group mt-6 shadow-md hover:shadow-lg"
-                        >
-                            Sign In
-                            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    <div className="pt-4">
+                        <button type="submit" className="w-full bg-[#3b82f6] hover:bg-blue-700 text-white font-[900] py-4 rounded-xl shadow-[0_8px_20px_-5px_rgba(59,130,246,0.5)] transition-all hover:-translate-y-0.5 active:scale-[0.98]">
+                            Login
                         </button>
-                    </form>
-
-                    <div className="mt-8 text-center bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <p className="text-sm text-gray-600 font-medium pb-2 border-b border-gray-200 mb-2 ">For Testing Purposes</p>
-                        <p className="text-sm text-gray-500 mb-1">New Institute? Register your account to get started.</p>
-                        <Link to="/register" className="text-indigo-600 font-semibold hover:underline text-sm inline-flex items-center gap-1">
-                            Create Institute Account
-                        </Link>
                     </div>
-                </div>
 
+                    <div className="text-center mt-10">
+                        <p className="text-[14px] font-[800] text-gray-500">
+                            Don't have an account?{' '}
+                            <Link to="/register" className="text-[#3b82f6] font-[900] hover:underline transition-all ml-1">Register Here</Link>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     );

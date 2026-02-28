@@ -3,24 +3,33 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { School, Building, Phone, MapPin, Mail, Lock } from 'lucide-react';
 
 const RegisterInstitute = () => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
-        phone: '',
-        address: ''
+        confirmPassword: ''
     });
 
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (formData.password !== formData.confirmPassword) {
+            return toast.error("Passwords do not match");
+        }
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/register-institute', formData);
+            const res = await axios.post('http://localhost:5000/api/auth/register-institute', {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password
+            });
             login(res.data.user, res.data.token);
             toast.success('Institute Registered Successfully');
             navigate('/admin/dashboard');
@@ -29,109 +38,87 @@ const RegisterInstitute = () => {
         }
     };
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?q=80&w=2669&auto=format&fit=crop')" }}>
-            <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-sm mix-blend-multiply"></div>
+        <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center p-6">
+            <div className="bg-white rounded-[32px] shadow-[0_10px_50px_rgba(0,0,0,0.04)] w-full max-w-[480px] p-10 md:p-14 border border-gray-100/50">
+                <div className="flex flex-col items-center mb-10">
+                    <div className="w-14 h-14 mb-4">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-[#1e3a8a]">
+                            <path d="M12 3L4 9V21H20V9L12 3Z" fill="currentColor" opacity="0.1" />
+                            <path d="M12 3L4 9V21H20V9L12 3Z" stroke="#0052cc" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M12 11V16M9 13.5H15" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                    <h1 className="text-[26px] font-[900] text-gray-900 tracking-tight leading-tight">Morai Institute OS</h1>
+                    <p className="text-gray-500 font-bold text-[13px] mt-1.5 uppercase tracking-wider">Create your admin account</p>
+                </div>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-xl z-10 relative">
-                <School className="mx-auto h-16 w-16 text-white bg-indigo-600 rounded-full p-3 shadow-xl border-4 border-white/20 mb-4" />
-                <h2 className="text-center text-4xl font-extrabold text-white text-shadow tracking-tight">Register Your Institute</h2>
-                <p className="mt-2 text-center text-indigo-100 max-w-sm mx-auto font-medium">Create your Super Admin account and set up your institute workspace.</p>
-            </div>
+                <form className="space-y-5" onSubmit={handleRegister}>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase">Institute Name</label>
+                        <input
+                            type="text"
+                            name="name"
+                            required
+                            value={formData.name}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Institute Name"
+                        />
+                    </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl z-10 relative">
-                <div className="bg-white py-10 px-8 shadow-2xl rounded-2xl border border-gray-100">
-                    <form className="space-y-6" onSubmit={handleRegister}>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase">Email</label>
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Email"
+                        />
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Institute Name */}
-                            <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-semibold text-gray-700">Institute Name</label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Building className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <input type="text" name="name" required
-                                        className="pl-10 block w-full border-gray-300 rounded-lg py-3 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 transition-colors border outline-none" placeholder="Oxford Academy"
-                                        value={formData.name} onChange={handleChange} />
-                                </div>
-                            </div>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Password"
+                        />
+                    </div>
 
-                            {/* Email */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700">Email Address</label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Mail className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <input type="email" name="email" required
-                                        className="pl-10 block w-full border-gray-300 rounded-lg py-3 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 transition-colors border outline-none" placeholder="admin@institute.edu"
-                                        value={formData.email} onChange={handleChange} />
-                                </div>
-                            </div>
+                    <div>
+                        <label className="block text-[13px] font-[900] text-gray-900 mb-2 uppercase">Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            className="w-full bg-[#f3f4f6] border-none rounded-xl py-4 px-6 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]/50 font-bold text-sm text-gray-700 placeholder-gray-400 transition-shadow"
+                            placeholder="Enter Again Password"
+                        />
+                    </div>
 
-                            {/* Phone */}
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700">Phone Number</label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Phone className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <input type="tel" name="phone" required
-                                        className="pl-10 block w-full border-gray-300 rounded-lg py-3 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 transition-colors border outline-none" placeholder="+1 234 567 890"
-                                        value={formData.phone} onChange={handleChange} />
-                                </div>
-                            </div>
+                    <div className="pt-4">
+                        <button type="submit" className="w-full bg-[#3b82f6] hover:bg-blue-700 text-white font-[900] py-4 rounded-xl shadow-[0_8px_20px_-5px_rgba(59,130,246,0.5)] transition-all hover:-translate-y-0.5 active:scale-[0.98]">
+                            Registration
+                        </button>
+                    </div>
 
-                            {/* Password */}
-                            <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-semibold text-gray-700">Admin Password</label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <input type="password" name="password" required
-                                        className="pl-10 block w-full border-gray-300 rounded-lg py-3 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 transition-colors border outline-none" placeholder="••••••••"
-                                        value={formData.password} onChange={handleChange} />
-                                </div>
-                                <p className="mt-1 text-xs text-gray-500">Minimum 8 characters with numbers and symbols</p>
-                            </div>
-
-                            {/* Address */}
-                            <div className="col-span-1 md:col-span-2">
-                                <label className="block text-sm font-semibold text-gray-700">Full Address</label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 pt-3 pointer-events-none">
-                                        <MapPin className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <textarea name="address" required rows="3"
-                                        className="pl-10 block w-full border-gray-300 rounded-lg py-3 bg-gray-50 focus:ring-indigo-500 focus:border-indigo-500 transition-colors border outline-none" placeholder="123 Education Ave, City, Country"
-                                        value={formData.address} onChange={handleChange}></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <button type="submit" className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-lg text-lg font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all hover:shadow-indigo-500/30 transform hover:-translate-y-0.5">
-                                Register Institute Workspace
-                            </button>
-                        </div>
-
-                    </form>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-gray-600">
+                    <div className="text-center mt-8">
+                        <p className="text-[13px] font-[800] text-gray-500">
                             Already have an account?{' '}
-                            <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-                                Log in instead
-                            </Link>
+                            <Link to="/login" className="text-[#3b82f6] hover:underline transition-all">Login Here</Link>
                         </p>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     );

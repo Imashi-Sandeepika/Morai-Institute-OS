@@ -41,7 +41,11 @@ const ManageTeachers = () => {
     return (
         <div className="space-y-6 fade-in w-full pb-10">
 
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-between items-start mb-6 w-full">
+                <div>
+                    <h1 className="text-[28px] font-[900] text-gray-900 tracking-tight leading-tight">Teachers Management</h1>
+                    <p className="text-gray-500 font-bold text-[13px] mt-0.5 tracking-wider">Manage all teachers in your Institute</p>
+                </div>
                 <Link to="/admin/teachers/add" className="bg-[#3b82f6] hover:bg-blue-700 text-white flex items-center justify-center px-6 py-3 rounded-xl text-sm font-bold transition-transform transform shadow-sm relative overflow-hidden group">
                     <span className="mr-2 text-lg leading-none">+</span> Add New Teacher
                     <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
@@ -64,13 +68,13 @@ const ManageTeachers = () => {
                     <table className="w-full text-center table-auto">
                         <thead>
                             <tr className="border-b-2 border-gray-100">
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Profile</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Teacher Name</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Subject</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Phone Number</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Monthly Salary</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Status</th>
-                                <th className="py-4 font-bold text-gray-900 text-[13px] uppercase tracking-wide">Action</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Profile</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Teacher Name</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Subject</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Phone Number</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Monthly Salary</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Status</th>
+                                <th className="py-4 font-bold text-gray-900 text-[13px] tracking-wide">Action</th>
                             </tr>
                         </thead>
                         <tbody>

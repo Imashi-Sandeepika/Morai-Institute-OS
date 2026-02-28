@@ -75,15 +75,19 @@ const AdminDashboard = () => {
                             </div>
                         </div>
                     </div>
-                    {/* 3D Illustration - Using a high quality placeholder character */}
-                    <div className="absolute right-0 bottom-0 top-0 w-1/3 flex items-end justify-end m-auto translate-y-4">
-                        <img
-                            src="https://cdn3d.iconscout.com/3d/premium/thumb/businesswoman-standing-with-crossed-arms-4043138-3351915.png"
-                            alt="Admin Character"
-                            className="w-full max-w-[200px] object-contain object-bottom pointer-events-none drop-shadow-md z-0"
-                        />
-                        {/* Background circle behind character */}
-                        <div className="absolute w-[180px] h-[180px] bg-indigo-100 rounded-full right-4 bottom-10 -z-10 blur-xl"></div>
+                    {/* Admin Profile Picture Section */}
+                    <div className="absolute right-8 bottom-0 top-0 flex items-center justify-end z-0">
+                        <div className="w-40 h-40 rounded-full border-[6px] border-white shadow-xl overflow-hidden relative group transition-transform duration-500 hover:scale-105">
+                            <img
+                                src="/assets/admin_pfp.jpg"
+                                alt="Admin Profile"
+                                className="w-full h-full object-cover"
+                            />
+                            {/* Overlay glow */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-transparent pointer-events-none"></div>
+                        </div>
+                        {/* Soft background glow */}
+                        <div className="absolute w-48 h-48 bg-blue-100/50 rounded-full -z-10 blur-3xl right-0 translate-x-4"></div>
                     </div>
                 </div>
 

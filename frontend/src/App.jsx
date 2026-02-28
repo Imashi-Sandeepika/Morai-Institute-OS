@@ -22,6 +22,7 @@ import Reports from './pages/admin/Reports';
 import TeacherProfile from './pages/admin/TeacherProfile';
 import StudentProfile from './pages/admin/StudentProfile';
 import ClassDetails from './pages/admin/ClassDetails';
+import Settings from './pages/admin/Settings';
 
 import TeacherDashboard from './pages/teacher/TeacherDashboard';
 import ParentDashboard from './pages/parent/ParentDashboard';
@@ -119,6 +120,11 @@ function App() {
           <Route path="/admin/reports" element={
             <ProtectedRoute allowedRoles={['superadmin', 'institute']}>
               <Reports />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/settings" element={
+            <ProtectedRoute allowedRoles={['superadmin', 'institute']}>
+              <Settings />
             </ProtectedRoute>
           } />
 

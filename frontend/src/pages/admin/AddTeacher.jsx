@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import { UploadCloud } from 'lucide-react';
 
 const AddTeacher = () => {
@@ -13,76 +15,94 @@ const AddTeacher = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Upload logic here 
-        console.log(formData);
+        try {
+            await axios.post('http://localhost:5000/api/admin/add-teacher', {
+                name: formData.teacherName,
+                phoneNumber: formData.phoneNumber,
+                subject: formData.subject,
+                monthlySalary: Number(formData.monthlySalary)
+            });
+            toast.success('Teacher Added Successfully');
+            setFormData({ teacherName: '', phoneNumber: '', subject: '', monthlySalary: '' });
+        } catch (error) {
+            toast.error('Failed to add teacher');
+        }
     };
 
     return (
-        <div className="max-w-4xl mx-auto py-8 fade-in">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-8 tracking-tight">Add New Teacher</h1>
-
-            <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Upload Profile Picture */}
+        <div className="space-y-6 fade-in w-full pb-10">
+            <div className="flex justify-between items-start mb-10 w-full">
                 <div>
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
-                        <div className="bg-indigo-500 text-white rounded p-0.5">
-                            <UploadCloud size={16} />
+                    <h1 className="text-[28px] font-[900] text-gray-900 tracking-tight leading-tight">Add New Teacher</h1>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-10">
+                {/* Upload Profile Picture */}
+                <div className="w-full">
+                    <label className="flex items-center gap-2 text-[14px] font-[900] text-gray-900 mb-4 uppercase tracking-wider">
+                        <div className="bg-[#3b82f6] text-white rounded p-0.5">
+                            <UploadCloud size={18} strokeWidth={3} />
                         </div>
                         Upload Profile Picture
                     </label>
-                    <div className="border-2 border-dashed border-indigo-300 rounded-xl bg-white flex flex-col items-center justify-center py-10 px-4 cursor-pointer hover:bg-indigo-50/50 transition-colors">
-                        <div className="bg-indigo-500 text-white rounded p-1 mb-2">
-                            <UploadCloud size={18} />
+                    <div className="border-2 border-dashed border-gray-200 rounded-[28px] bg-white flex flex-col items-center justify-center py-16 px-4 cursor-pointer hover:border-[#3b82f6]/50 hover:bg-gray-50/50 transition-all group">
+                        <div className="bg-[#3b82f6] text-white rounded-xl p-2.5 mb-4 shadow-[0_8px_20px_-5px_rgba(59,130,246,0.6)] group-hover:scale-110 transition-transform">
+                            <UploadCloud size={24} strokeWidth={2.5} />
                         </div>
-                        <p className="text-sm font-bold text-gray-900">Click to upload</p>
-                        <p className="text-xs text-gray-500 mt-1">or drag and drop your file here</p>
-                        <p className="text-xs text-gray-400 mt-0.5">JPG, PNG or PDF (max. 5MB)</p>
+                        <p className="text-[15px] font-[900] text-gray-900">Click to upload</p>
+                        <p className="text-[13px] font-[700] text-gray-500 mt-1">or drag and drop your file here</p>
+                        <p className="text-[12px] font-[600] text-gray-400 mt-0.5">JPG, PNG or PDF (max. 5MB)</p>
                     </div>
                 </div>
 
                 {/* Form Fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                    <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-2">Teacher Name</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                    <div className="space-y-3">
+                        <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Teacher Name</label>
                         <input
                             type="text"
                             name="teacherName"
-                            className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow text-sm placeholder-gray-400"
+                            required
+                            className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400"
                             placeholder="Enter Teacher Name"
                             value={formData.teacherName}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-2">Phone Number</label>
+                    <div className="space-y-3">
+                        <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Phone Number</label>
                         <input
                             type="tel"
                             name="phoneNumber"
-                            className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow text-sm placeholder-gray-400"
+                            required
+                            className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400"
                             placeholder="Enter Phone Number"
                             value={formData.phoneNumber}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-2">Subject</label>
+                    <div className="space-y-3">
+                        <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Subject</label>
                         <input
                             type="text"
                             name="subject"
-                            className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow text-sm placeholder-gray-400"
+                            required
+                            className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400"
                             placeholder="Enter Subject Name"
                             value={formData.subject}
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-bold text-gray-900 mb-2">Monthly Salary</label>
+                    <div className="space-y-3">
+                        <label className="block text-[14px] font-[900] text-gray-900 uppercase tracking-wider">Monthly Salary</label>
                         <input
                             type="text"
                             name="monthlySalary"
-                            className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow text-sm placeholder-gray-400"
+                            required
+                            className="w-full border-2 border-gray-100 rounded-2xl px-6 py-4.5 bg-white focus:outline-none focus:ring-4 focus:ring-[#3b82f6]/10 focus:border-[#3b82f6]/30 transition-all font-[700] text-gray-800 placeholder-gray-400"
                             placeholder="Enter Salary Amount"
                             value={formData.monthlySalary}
                             onChange={handleChange}
@@ -90,8 +110,8 @@ const AddTeacher = () => {
                     </div>
                 </div>
 
-                <div>
-                    <button type="submit" className="bg-[#3b82f6] hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow mt-4 transition-transform active:scale-95">
+                <div className="pt-6">
+                    <button type="submit" className="bg-[#3b82f6] hover:bg-blue-700 text-white font-[900] py-4.5 px-12 rounded-2xl shadow-[0_8px_25px_-5px_rgba(59,130,246,0.5)] transition-all hover:-translate-y-1 active:scale-[0.98] text-[15px]">
                         Save Details
                     </button>
                 </div>

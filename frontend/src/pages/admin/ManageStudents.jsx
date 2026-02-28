@@ -52,8 +52,12 @@ const ManageStudents = () => {
             <div className="flex justify-between items-start mb-6 w-full">
                 <div>
                     <h1 className="text-[28px] font-[900] text-gray-900 tracking-tight leading-tight">Student Management</h1>
-                    <p className="text-gray-500 font-bold text-[13px] mt-0.5">Manage all Student in your Institute</p>
+                    <p className="text-gray-500 font-bold text-[13px] mt-0.5 tracking-wider">Manage all students in your Institute</p>
                 </div>
+                <Link to="/admin/students/add" className="bg-[#3b82f6] hover:bg-blue-700 text-white flex items-center justify-center px-6 py-3 rounded-xl text-sm font-bold transition-transform transform shadow-sm relative overflow-hidden group">
+                    <span className="mr-2 text-lg leading-none">+</span> Add New Student
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                </Link>
             </div>
 
             <div className="bg-white rounded-[24px] p-6 lg:p-8 shadow-[0px_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 mt-8">

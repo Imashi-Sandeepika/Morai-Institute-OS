@@ -93,6 +93,8 @@ const Header = ({ setIsOpen }) => {
                         </div>
                         {user?.profilePicture ? (
                             <img src={user.profilePicture} alt="Profile" className="w-11 h-11 rounded-full border-2 border-white shadow-sm object-cover" />
+                        ) : (user?.role === 'admin' || user?.role === 'institute') ? (
+                            <img src="/assets/admin_pfp.jpg" alt="Admin Profile" className="w-11 h-11 rounded-full border-2 border-white shadow-sm object-cover" />
                         ) : (
                             <div className="bg-blue-600 text-white font-bold w-11 h-11 rounded-full flex items-center justify-center shadow-sm text-sm tracking-wide">
                                 {getInitials(user?.name)}
